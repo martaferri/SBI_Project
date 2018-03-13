@@ -107,7 +107,7 @@ alignments_results.close()
 
 # Finally, we substitute the chains of the original pdb file of the pair for the corresponding chain found in the fasta file 
 pair_file = open(sys.argv[1], "r")
-renamed_file = open(sys.argv[1][:4] + "_renamed.pdb", "w")
+renamed_file = open(sys.argv[1][0:-4] + "_renamed.pdb", "w")
 
 # Simplification of the dict to just the letter of the chain
 dict_simple = {}
