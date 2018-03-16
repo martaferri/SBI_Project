@@ -30,6 +30,8 @@ for pair in inputs_files:
 
 ref_chains = list_of_dic[0]
 ref_chains_id=[x.id for x in ref_chains]
+ref_counter_chains=ref_chains.copy()
+
 
 ref_counter = {} #from allchains -> counter of chains
 for key,value in allchains.items():
@@ -49,62 +51,84 @@ current_model = [x.get_parent() for x in ref_chains.keys()]
 for alt_chains in list_of_dic[1:]:
     print("ref_chains: ",  ref_chains, "alt_chains: ",alt_chains)
     # for each chain of ref_chains
-    for key, value in ref_chains.items():
-#        print(key,value)
-        for element in alt_chains:
-#            print(element)
-            if value == alt_chains[element]:
-                fixedchain=key
-                break
-            alt_chains_copy=col.OrderedDict(alt_chains)
-            movingchain = element
-            del alt_chains_copy[movingchain]
-            altchain=list(alt_chains_copy)[0]
-            
-        
-            #fixedchain (from current input -> working chain)
-            fixed_atoms = fixedchain.get_atoms()
-            fixed_atoms_list=[]
-            for atom in fixed_atoms:
-                if atom.get_name() == 'CA':
-                    fixed_atoms_list.append(atom)
-                    
-            #movingchain (same chain as working chain, but other input)
-            moving_atoms = movingchain.get_atoms()
-            moving_atoms_list=[]
-            for atom in moving_atoms:
-                if atom.get_name() == 'CA':
-                    moving_atoms_list.append(atom)
-                    
-            #altchain (other chain in other input -> apply rotran matrix)
-            alt_atoms = altchain.get_atoms()
-            alt_atoms_list=[]
-            for atom in alt_atoms:
-                if atom.get_name() == 'CA':
-                    alt_atoms_list.append(atom)
-    print("fixedchain: ", fixedchain, "movingchain: ", movingchain, "altchain: ", altchain)             
-    
-    #actualize ref_chains *add altchain to ref_chains -> new model
-    for dic in list_of_dic:
-        for key2,value2 in dic.items():
-            print(key2,value2)
-            if altchain == key2:
-                ref_chains[altchain] = value2
+    for key0, value0 in ref_chains.items():
+        for chain_id, counter in ref_counter.items():
+            if value0 == chain_id and counter != 0:
+                remaining = chain_id
+       
+        for key, value in ref_chains.items():
+            if value != remaining:
+                print("yes")
+                        
+                for element in alt_chains:
+        #            print(element)
+                    if value == alt_chains[element]:
+                        fixedchain=key
+                        #print("fixedchain:",fixedchain)
+                    break #USEFUL
+                alt_chains_copy=col.OrderedDict(alt_chains)
+                movingchain = element
+                del alt_chains_copy[movingchain]
+                altchain=list(alt_chains_copy)[0]
                 
-    #actualize ref_counter
-    for key,value in ref_chains.items():
-        for key2,value2 in ref_counter.items():
-            i=value2
-            if value == key2:
-                i-=1
-                ref_counter[value] = i
-    print(ref_counter)
+#                print(fixedchain, movingchain, altchain)
+            
+                #fixedchain (from current input -> working chain)
+                fixed_atoms = fixedchain.get_atoms()
+                fixed_atoms_list=[]
+                for atom in fixed_atoms:
+                    if atom.get_name() == 'CA':
+                        fixed_atoms_list.append(atom)
+                        
+                #movingchain (same chain as working chain, but other input)
+                moving_atoms = movingchain.get_atoms()
+                moving_atoms_list=[]
+                for atom in moving_atoms:
+                    if atom.get_name() == 'CA':
+                        moving_atoms_list.append(atom)
+                        
+                #altchain (other chain in other input -> apply rotran matrix)
+                alt_atoms = altchain.get_atoms()
+                alt_atoms_list=[]
+                for atom in alt_atoms:
+                    if atom.get_name() == 'CA':
+                        alt_atoms_list.append(atom)     
+        
+            #print(fixedchain, movingchain, altchain)
+        
+            #actualize ref_chains *add altchain to ref_chains -> new model
+            for dic in list_of_dic:
+                for key2,value2 in dic.items():
+                    if altchain == key2:
+                        ref_counter_chains[altchain] = value2
+#    print("ref_counter_chains:",ref_counter_chains)
+#    print("ref_counter:",ref_counter)
+#    break
+                        
+        #actualize ref_counter
+        for key3,value3 in ref_counter_chains.items():
+            for ids,count in ref_counter.items():
+                i=count
+                if value3 == ids:
+                    i-=1
+                    ref_counter[value3] = i
+    #    print("ref_counter_chains:",ref_counter_chains)
+    #    print("ref_counter:",ref_counter)
+    #    break
+    ref_chains=alt_chains
+print("finalaltchain",altchain)
+print("ref_counter_chains:",ref_counter_chains)
+print("ref_counter:",ref_counter)
     
     
 
-    
-print(ref_chains)            
-#        super_imposer.set_atoms(fixed_atoms_list, moving_atoms_list)
+print(ref_counter_chains)
+print(ref_counter)
+
+
+
+        
+            super_imposer.set_atoms(fixed_atoms_list, moving_atoms_list)
 #        print(numpy.abs(super_imposer.rms))
         
 #        current_model[0].add(altchain)
