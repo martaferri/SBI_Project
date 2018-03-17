@@ -2,6 +2,16 @@ import Bio.PDB
 import numpy
 import os
 import collections as col
+import string
+
+
+ascii_list = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k',
+              'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'A', 'B', 'C', 'D', 'E', 'F',
+              'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '!',
+              '"', '#', '$', '%', '&', "'", '(', ')', '*', '+', ',', '-', '.', '/', ':', ';', '<', '=', '>', '?', '@',
+              '[', ']', '^', '_', '`', '{', '|', '}', '~']
+
+ascii_list2 = list(string.printable)
 
 inputs_dir = os.getcwd()+"/inputs/"
 inputs_files = os.listdir(inputs_dir)
@@ -57,6 +67,7 @@ for alt_chains in list_of_dic[1:]:
     for key0, value0 in ref_chains.items():
         n_round += 1
         print("ROUND %d - Object: %s,  Chain: %s,  Counter: %s" % (n_round, key0, value0, ref_counter))
+        print("ref_counter_chains: %s" % ref_counter_chains)
         for chain_id, counter in ref_counter.items():
             if value0 == chain_id and counter != 0:
                 remaining = chain_id
@@ -97,13 +108,40 @@ for alt_chains in list_of_dic[1:]:
                             if atom.get_name() == 'CA':
                                 alt_atoms_list.append(atom)
 
-                        # print("\t Fixed: %s, Moving: %s, Alt: %s"% (fixedchain, movingchain, altchain))
+                        print("\tSUPERIMPOSING WITH:\n\t Fixed: %s, Moving: %s, Alt: %s" % (fixedchain, movingchain, altchain))
 
-                        # actualize ref_counter_chains *add altchain to ref_counter_chains -> new model
+                        super_imposer.set_atoms(fixed_atoms_list, moving_atoms_list)
+                        print("\t RMSD: %.4f" % numpy.abs(super_imposer.rms))
+
+                        # creating a copy of the altchain to add it with a new id
+                        list_of_ids = []
+                        for element in ref_counter_chains:
+                            list_of_ids.append(element.get_id())
+                        for character in ascii_list:
+                            if character not in list_of_ids:
+                                new_id = character
+                                break
+                        new_chain = Bio.PDB.Chain.Chain(new_id)
+                        for residue in altchain.get_residues():
+                            new_chain.add(residue.copy())
+
+                        current_model[0].add(new_chain)
+                        super_imposer.apply(new_chain.get_atoms())
+
+                        ref_chains_id = [x.id for x in current_model[0]]
+                        model_name = "_".join(ref_chains_id)
+                        pdb_out_filename = "%s.aligned.pdb" % model_name
+                        io = Bio.PDB.PDBIO()
+                        io.set_structure(current_model[0])
+                        io.save(pdb_out_filename)
+
+
+
+                        # actualize ref_conter_chains *add altchain to ref_counter_chains -> new model
                         for dic in list_of_dic:
                             for key2, value2 in dic.items():
                                 if altchain == key2:
-                                    ref_counter_chains[altchain] = value2
+                                    ref_counter_chains[new_chain] = value2
 
 
                         print("\tRound %d ref_counter_chains: %s" % (n_round, ref_counter_chains))
@@ -123,7 +161,7 @@ for alt_chains in list_of_dic[1:]:
     ref_chains = alt_chains
 
 
-print("\nfinal altchain: %s" % altchain)
+print("SUMMARY\nfinal altchain: %s" % altchain)
 print("final ref_counter_chains: %s" % ref_counter_chains)
 print("final ref_counter: %s\n" % ref_counter)
 
@@ -269,13 +307,3 @@ for index, ref_chains in enumerate(allchains_list):
 #            print ("chain in other file")
 #        else:
 #            print("chain not in other file")
-
-
-        
-            
-    
-    
-    
-
-
-
