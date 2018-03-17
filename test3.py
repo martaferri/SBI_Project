@@ -4,6 +4,13 @@ import os
 import collections as col
 import string
 
+def get_atoms_list(chain):
+    atoms = chain.get_atoms()
+    atoms_list = []
+    for atom in atoms:
+        if atom.get_name() == 'CA':
+            atoms_list.append(atom)
+    return atoms_list
 
 ascii_list = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k',
               'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'A', 'B', 'C', 'D', 'E', 'F',
@@ -87,31 +94,14 @@ for alt_chains in list_of_dic[1:]:
 
                         print("\tFixed: %s, Moving: %s, Alt: %s" % (fixedchain, movingchain, altchain))
 
-                        # fixedchain (from current input -> working chain)
-                        fixed_atoms = fixedchain.get_atoms()
-                        fixed_atoms_list = []
-                        for atom in fixed_atoms:
-                            if atom.get_name() == 'CA':
-                                fixed_atoms_list.append(atom)
 
-                        # movingchain (same chain as working chain, but other input)
-                        moving_atoms = movingchain.get_atoms()
-                        moving_atoms_list = []
-                        for atom in moving_atoms:
-                            if atom.get_name() == 'CA':
-                                moving_atoms_list.append(atom)
+                        fixed_atoms_list = get_atoms_list(fixedchain)
 
-                        # altchain (other chain in other input -> apply rotran matrix)
-                        alt_atoms = altchain.get_atoms()
-                        alt_atoms_list = []
-                        for atom in alt_atoms:
-                            if atom.get_name() == 'CA':
-                                alt_atoms_list.append(atom)
+                        moving_atoms_list = get_atoms_list(movingchain)
+
+                        alt_atoms_list = get_atoms_list(altchain)
 
                         print("\tSUPERIMPOSING WITH:\n\t Fixed: %s, Moving: %s, Alt: %s" % (fixedchain, movingchain, altchain))
-
-                        super_imposer.set_atoms(fixed_atoms_list, moving_atoms_list)
-                        print("\t RMSD: %.4f" % numpy.abs(super_imposer.rms))
 
                         # creating a copy of the altchain to add it with a new id
                         list_of_ids = []
@@ -126,7 +116,22 @@ for alt_chains in list_of_dic[1:]:
                             new_chain.add(residue.copy())
 
                         current_model[0].add(new_chain)
-                        super_imposer.apply(new_chain.get_atoms())
+
+                        if len(fixed_atoms_list) == len(moving_atoms_list):
+                            continue
+                        else:
+                            # funcion para sacar la secuencia de cada cadena (CA!!)
+                            # alinear las secuencias
+                            # recorrer el alineamiento y si hay un gap, quitar el residuo de la otra cadena (por indice)
+                            # actualizar las cadenas
+
+
+                        # find the best rotran matrices
+                        for x in range(10):
+                            super_imposer.set_atoms(fixed_atoms_list, moving_atoms_list)
+                            print("\t RMSD %d: %.40f" % (x, numpy.abs(super_imposer.rms)))
+                            super_imposer.apply(new_chain.get_atoms())
+
 
                         ref_chains_id = [x.id for x in current_model[0]]
                         model_name = "_".join(ref_chains_id)
@@ -166,144 +171,3 @@ print("final ref_counter_chains: %s" % ref_counter_chains)
 print("final ref_counter: %s\n" % ref_counter)
 
 print("END")
-
-
-        
-#        super_imposer.set_atoms(fixed_atoms_list, moving_atoms_list)
-#        print(numpy.abs(super_imposer.rms))
-        
-#        current_model[0].add(altchain)
-#        super_imposer.apply(altchain.get_atoms())
-#        
-#        ref_chains_id=[x.id for x in current_model[0]]
-#        model_name = "_".join(ref_chains_id)
-#        pdb_out_filename = "%s.aligned.pdb" % model_name
-#        io=Bio.PDB.PDBIO()
-#        io.set_structure(current_model[0])
-#        io.save(pdb_out_filename)
-        
-
-
-
-
-
-
-
-
-############################################################################################
-for index, ref_chains in enumerate(allchains_list):
-    ref_dic={} #ref model dictionary (key: chain id / value: chain object)
-    alt_dic={} #alt model dictionary (key: chain id / value: chain object)
-    
-    current_model = [x.get_parent() for x in ref_chains]
-    ref_chains_id=[x.id for x in ref_chains]
-    
-    c=0
-    for ch in ref_chains_id:
-        for key, value in allchains.items():
-            if ch == key:
-                ref_dic[ref_chains[c]] = value
-        c+=1
-
-    other_chains = allchains_list.copy()
-    other_chains.pop(index)
-
-    for alt_chains in other_chains:
-        alt_chains_id = [x.id for x in alt_chains] #chain_id (alt)=alt_chains_id
-    i=0
-    for ch in alt_chains_id:
-        for key, value in allchains.items():
-            if ch == key:
-                alt_dic[alt_chains[i]] = value
-        i+=1
-    
-        
-    if ref_dic[ref_chains[0]] in alt_chains_id:
-        fixedchain=list(ref_dic.keys())[list(ref_dic.values()).index(ref_dic[ref_chains[0]])] #retrieve key (chain object) using value (value of ref_dic -> which is equivalent to chain id)
-
-        idx=alt_chains_id.index(ref_dic[ref_chains[0]])
-        
-        moving=alt_chains_id[idx]
-        movingchain=list(alt_dic.keys())[list(alt_dic.values()).index(moving)]
-        
-        alt=alt_chains_id.copy()
-        alt.pop(idx)
-        alt="".join(alt)
-        altchain=list(alt_dic.keys())[list(alt_dic.values()).index(alt)]
-           
-    elif ref_dic[ref_chains[1]] in alt_chains_id:
-        fixedchain=list(ref_dic.keys())[list(ref_dic.values()).index(ref_dic[ref_chains[1]])] 
-        
-        idx=alt_chains_id.index(ref_dic[ref_chains[1]])
-        
-        moving=alt_chains_id[idx]
-        movingchain=list(alt_dic.keys())[list(alt_dic.values()).index(moving)]
-        
-        alt=alt_chains_id.copy()
-        alt.pop(idx)
-        alt="".join(alt)
-        altchain=list(alt_dic.keys())[list(alt_dic.values()).index(alt)]
-#    print(ref_chains) 
-#    print("fixed: ",fixedchain, "moving :", movingchain, "alt :", altchain)
-
-        #fixedchain (from current input -> working chain)
-        fixed_atoms = fixedchain.get_atoms()
-        fixed_atoms_list=[]
-        for atom in fixed_atoms:
-            if atom.get_name() == 'CA':
-                fixed_atoms_list.append(atom)
-                
-        #movingchain (same chain as working chain, but other input)
-        moving_atoms = movingchain.get_atoms()
-        moving_atoms_list=[]
-        for atom in moving_atoms:
-            if atom.get_name() == 'CA':
-                moving_atoms_list.append(atom)
-                
-        #altchain (other chain in other input -> apply rotran matrix)
-        alt_atoms = altchain.get_atoms()
-        alt_atoms_list=[]
-        for atom in alt_atoms:
-            if atom.get_name() == 'CA':
-                alt_atoms_list.append(atom)
-        
-        print(fixedchain == movingchain)
-        super_imposer.set_atoms(fixed_atoms_list, moving_atoms_list)
-        print(numpy.abs(super_imposer.rms))
-        
-        current_model[0].add(altchain)
-        
-        model_name="_".join(ref_chains_id)
-        pdb_out_filename="%s_aligned.pdb" % model_name
-        super_imposer.apply(altchain.get_atoms())
-        
-        io=Bio.PDB.PDBIO()
-        io.set_structure(altchain.get_parent())
-        io.save(pdb_out_filename)
-        
-        
-        
-        
-        
-        
-        
-
-#    allchains.setdefault(pdb_code, chain_pair)
-#    allchains_ordered = col.OrderedDict(allchains)
-#print(type(allchains))
-#print(type(allchains_ordered))
-    
-#ref_chains = {}
-#rc_key = list(allchains_ordered.keys())[0]
-#rc_values = list(allchains_ordered.values())[0]
-#ref_chains[rc_key] = rc_values
-#
-#
-#for key, value in allchains_ordered.items():
-#    print(key,value)
-#    for chain in value:
-#        print(chain.id)
-#        if chain.id in allchains_ordered.values():
-#            print ("chain in other file")
-#        else:
-#            print("chain not in other file")
