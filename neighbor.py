@@ -7,8 +7,8 @@ structure = Bio.PDB.PDBParser().get_structure('X', '1d66.pdb')
 atom_list = Bio.PDB.Selection.unfold_entities(structure, 'A')
 ns = Bio.PDB.NeighborSearch(atom_list)
 chain_list = Bio.PDB.Selection.unfold_entities(structure, 'C')
-for element in chain_list:
-	chain_name_list.append(element.get_id()) 
+#for element in chain_list:
+#	chain_name_list.append(element.get_id()) 
 
 for chain in chain_list:
 	neighbors2 = set()
