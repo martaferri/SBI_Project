@@ -30,7 +30,7 @@ import utilities
 import copy
 from functions import *
 
-inputs_dir = os.getcwd()+"/inputs_cm/"
+inputs_dir = os.getcwd()+"/inputs/"
 inputs_files = os.listdir(inputs_dir)
 
 PDBparser = Bio.PDB.PDBParser()
@@ -39,6 +39,7 @@ PDBparser = Bio.PDB.PDBParser()
 structures_list = []
 chains_dic = {} #key: chain id / value: chain object
 allchains = {'A': 'A', 'B': 'B', 'C':'C', 'D':'D', 'E':'A', 'F':'B', 'G':'C','H':'D'} #IMPORT
+
 #USER!
 ref_counter_user={'A':2, 'B':2, 'C':2, 'D':2}
 
@@ -60,9 +61,9 @@ for pair in inputs_files:
 
 ##############################
 
-ref_counter_chains = copy.copy(list_of_dic[0])
+ref_counter_chains = copy.copy(list_of_dic[2])
 
-current_model = [x.get_parent() for x in copy.copy(list_of_dic[0]).keys()]
+current_model = [x.get_parent() for x in copy.copy(list_of_dic[2]).keys()]
 
 n_round = 0
 
@@ -70,15 +71,13 @@ n_round = 0
 ref_counter={}
 for ids, count in ref_counter_user.items():
     ref_counter[ids] = count
-    for key, value in copy.copy(list_of_dic[0]).items():
-        i = count
+    i = count
+    for key, value in copy.copy(list_of_dic[2]).items():
         if value == ids:
             i -= 1
             ref_counter[ids] = i
 
-
-
-ref_chains = copy.copy(list_of_dic[0])
+ref_chains = copy.copy(list_of_dic[2])
 
 idx=list_of_dic.index(ref_chains)
 total_list=list_of_dic[:idx]+list_of_dic[idx+1:]
