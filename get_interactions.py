@@ -4,16 +4,11 @@ import Bio.PDB
 import numpy
 import itertools
 import re
-import os
+
 
 if len(sys.argv) <= 1:
     print('USAGE: python3 file.pdb')
     exit()
-
-# Creating an output directory
-output = ("./output_interactions/")
-if not os.path.exists(output):
-	os.makedirs(output)
 
 # Opening the pdb without chains I and J because they were giving problems
 complex_struct = open(sys.argv[1], 'r')
@@ -43,24 +38,29 @@ def calc_distances_residues(chain1, chain2):
 		dist = combination[0] - combination[1]
 		arr.append(dist)
 
-	nparr = numpy.array(arr)
-	dist_tuple = (min(abs(nparr)), max(abs(nparr)), len(nparr))
-	return dist_tuple
-
+	if len(arr) != 0: 
+		nparr = numpy.array(arr)
+		dist_tuple = (min(abs(nparr)), max(abs(nparr)), len(nparr))
+		return dist_tuple
 
 # Loop that compares all the chains and stores in a dict of dicts each computation of the distances between them
 main_dict = {}
-for model in structure:
-	for chain1 in model:
-		# print("1",chain1)
+aa_list = ["ALA", "CYS", "ASP", "GLU", "PHE", "GLY", "HIS", "ILE", "LYS", "LEU", "MET", "ASN", "PRO", "GLN", "ARG", "SER", "THR", "VAL", "TRP", "TYR"]
+set_aachains = set()
+
+for model in structure: 
+	list_residues = model.get_residues()
+	for res in list_residues:
+		if res.get_resname() in aa_list:
+			set_aachains.add(res.get_parent())
+			print (set_aachains)
+	
+	for chain1 in set_aachains:
 		main_dict[chain1.get_id()] = {}
-		for chain2 in model:
+		for chain2 in set_aachains:
 			if chain1.get_id() != chain2.get_id():
 				if chain2.get_id() not in main_dict:
-					# print("2",chain2)
 					main_dict[chain1.get_id()][chain2.get_id()] = calc_distances_residues(chain1, chain2)
-
-# print(main_dict)
 
 # Setting a cut-off value to determine if there is or not an interaction. Storing the interactions in a list
 interactions_list = []
@@ -76,7 +76,7 @@ complex_struct.close()
 # Creating the new pair files
 for element in interactions_list:
 	pdb = open(sys.argv[1], 'r')
-	fo = open(output+element + ".pdb", "w")
+	fo = open(element + ".pdb", "w")
 	for line in pdb:
 		if line.startswith('ATOM'):
 			line = line.strip()
@@ -88,4 +88,4 @@ for element in interactions_list:
 				elif chain == element[1]:
 					fo.write("%s\n"%(line))
 	fo.close()
-	pdb.close()		
+	pdb.close()	
