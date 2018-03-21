@@ -4,10 +4,16 @@ import Bio.PDB
 import numpy
 import itertools
 import re
+import os
 
 if len(sys.argv) <= 1:
     print('USAGE: python3 file.pdb')
     exit()
+
+# Creating an output directory
+output = ("./output_interactions/")
+if not os.path.exists(output):
+	os.makedirs(output)
 
 # Opening the pdb without chains I and J because they were giving problems
 complex_struct = open(sys.argv[1], 'r')
@@ -70,7 +76,7 @@ complex_struct.close()
 # Creating the new pair files
 for element in interactions_list:
 	pdb = open(sys.argv[1], 'r')
-	fo = open(element + ".pdb", "w")
+	fo = open(output+element + ".pdb", "w")
 	for line in pdb:
 		if line.startswith('ATOM'):
 			line = line.strip()
