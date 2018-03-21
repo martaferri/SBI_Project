@@ -70,7 +70,7 @@ complex_struct.close()
 # Creating the new pair files
 for element in interactions_list:
 	pdb = open(sys.argv[1], 'r')
-	fo = open(sys.argv[1][0:-4] + "_" + element + ".pdb", "w")
+	fo = open(element + ".pdb", "w")
 	for line in pdb:
 		if line.startswith('ATOM'):
 			line = line.strip()
