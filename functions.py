@@ -103,3 +103,10 @@ def check_clashes(current_model):
         return True
     else:
         return False
+
+def unique_chains_fasta (number_to_letter):
+    fo = open("unique_chains_fasta.mfa", "w")
+    for key, value in number_to_letter.items():
+        name_chain = "chain_" + value
+        fo.write(">%s\n%s\n" % (name_chain, get_seq_from_pdbchain(key)))
+    fo.close()
