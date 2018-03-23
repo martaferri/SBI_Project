@@ -31,7 +31,7 @@ def pdb_to_fasta(pdb_file):
 	                main_dict[toks[4]] += utilities.three_to_one[aa]           
 	    prev = toks[5]
 
-	name = sys.argv[1][0:4]
+	name = "prot"
 	for key, value in main_dict.items():
 	    name_chain = name + ":" + key 
 	    fasta_from_pdb.write(">%s\n%s\n"%(name_chain, value))

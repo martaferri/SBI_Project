@@ -6,28 +6,23 @@ import itertools
 import re
 import chain_dict as cd
 
-
-if len(sys.argv) <= 1:
-    print('USAGE: python3 script.py file.pdb file.fasta')
-    exit()
-
 ################################
 ######## chain_dict.py  ########
 ################################
 
-pdb_file = open(sys.argv[1], "r")
+pdb_file_name = "3kuy_histoneoctamer.pdb"
+
+pdb_file = open(pdb_file_name,"r")
 
 output = open("dict_and_interactions.txt", "w")
-
 
 # Function to create a fasta file from the pdb file
 cd.pdb_to_fasta(pdb_file)
 
 pdb_file.close()
 
-
 # Now we want to make pariwise comparison to see if there were chains in the pdb that corresponded to the same chain in the fasta
-fasta = open(sys.argv[2])
+fasta = open("3kuy.fa")
 fasta_from_pdb = open("fasta_from_pdb.fasta", "r")
 alignments_results = open("alignments_results.txt", "w")
 
@@ -51,7 +46,7 @@ output.write("\n\n")
 ################################
 
 # Opening the pdb
-complex_struct = open(sys.argv[1], 'r')
+complex_struct = open(pdb_file_name, 'r')
 
 # Creating the object from the complex
 p = Bio.PDB.PDBParser()
@@ -115,7 +110,7 @@ if not os.path.exists(interactions):
     os.makedirs(interactions)
 
 for element in interactions_list:
-    pdb = open(sys.argv[1], 'r')
+    pdb = open(pdb_file_name, 'r')
     # fo = open(sys.argv[1][0:-4] + "_" + element + ".pdb", "w")
     fo = open(interactions + element + ".pdb", "w")
     for line in pdb:
