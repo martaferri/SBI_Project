@@ -80,7 +80,7 @@ for element in interactions_list:
 	for line in pdb:
 		if line.startswith('ATOM'):
 			line = line.strip()
-			search = re.search(r'[A-Z]*\s*\d{1,3}\s*[A-Z]{1,2}[0-9]?\s*[A-Z]{3}\s([A-Z]).*', line)
+			search = re.search(r'[A-Z]*\s*\d{1,3}\s*[A-Z]{1,2}[0-9]?\s*[A-Z]{3}\s([a-zA-Z]).*', line)
 			if search:
 				chain = search.group(1)			
 				if chain == element[0]:
