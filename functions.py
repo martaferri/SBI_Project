@@ -7,6 +7,7 @@ import collections as col
 import string
 import utilities
 
+
 def get_atoms_list(chain):
     atoms = chain.get_atoms()
     atoms_list = []
@@ -15,7 +16,8 @@ def get_atoms_list(chain):
             atoms_list.append(atom)
     return atoms_list
 
-def three_to_one(three_res_list): # returns seq string (one format). Used in the get_seq_from_pdbchain function
+
+def three_to_one(three_res_list):  # returns seq string (one format). Used in the get_seq_from_pdbchain function
     one_res_list = []
 
     for res in three_res_list:
@@ -26,7 +28,8 @@ def three_to_one(three_res_list): # returns seq string (one format). Used in the
             return False
     return "".join(one_res_list)
 
-def get_seq_from_pdbchain(chain): # returns the pdb seq in one letter format to make the alignment. Used in refine_for_superimpose
+
+def get_seq_from_pdbchain(chain):  # returns the pdb seq in one letter format to make the alignment. Used in refine_for_superimpose
     three_res_list = []
     for res in chain:
         residues_atoms = res.get_atoms()
@@ -34,21 +37,23 @@ def get_seq_from_pdbchain(chain): # returns the pdb seq in one letter format to 
             if atom.get_name() == 'CA':
                 residue = atom.get_parent()
                 three_res_list.append(residue.get_resname())
-    return three_to_one(three_res_list) #three_to_one function
+    return three_to_one(three_res_list)  # three_to_one function
 
 
-def one_to_three(chain_refined): # returns seq list of a chain (three format) from a seq in one letter format. Used in refine_for_superimpose
+def one_to_three(
+        chain_refined):  # returns seq list of a chain (three format) from a seq in one letter format. Used in refine_for_superimpose
     three_res_list = []
 
     for res in chain_refined:
-            three = utilities.one_to_three[res]
-            three_res_list.append(three)
+        three = utilities.one_to_three[res]
+        three_res_list.append(three)
     return three_res_list
 
-def refine_for_superimpose(fixedchain, movingchain): # returns a pattern of 0 and 1 to include or exclude the residue of the original chain
+
+def refine_for_superimpose(fixedchain,
+                           movingchain):  # returns a pattern of 0 and 1 to include or exclude the residue of the original chain
     fixedchain_seq = get_seq_from_pdbchain(fixedchain)
     movingchain_seq = get_seq_from_pdbchain(movingchain)
-
 
     alignments = pairwise2.align.globalxx(fixedchain_seq, movingchain_seq)
 
@@ -70,10 +75,31 @@ def refine_for_superimpose(fixedchain, movingchain): # returns a pattern of 0 an
     chains_pattern = (fixedchain_pattern, movingchain_pattern)
     return chains_pattern
 
-def get_chain_refined(chain_original, chain_pattern): # creates new chain objects filtering the residues of the original chain, to get their atoms later, with get_atoms_list() and superimpose
+
+def get_chain_refined(chain_original,
+                      chain_pattern):  # creates new chain objects filtering the residues of the original chain, to get their atoms later, with get_atoms_list() and superimpose
     new_chain = Bio.PDB.Chain.Chain('X')
 
     for residue, pattern in zip(chain_original.get_residues(), chain_pattern):
-            if pattern == 1:
-                new_chain.add(residue.copy())
+        if pattern == 1:
+            new_chain.add(residue.copy())
     return new_chain
+
+def check_clashes(current_model):
+    neighbors2 = set()
+    atom_list = Bio.PDB.Selection.unfold_entities(current_model, 'A')
+    ns = Bio.PDB.NeighborSearch(atom_list)
+    chain_list = Bio.PDB.Selection.unfold_entities(current_model, 'C')
+
+    for chain in chain_list:
+        for at in chain.get_atoms():
+            center = at.get_coord()
+            neighbors = ns.search(center, 1.5, level='C')
+            for element in neighbors:
+                if element != chain:
+                    neighbors2.add(element)
+
+    if len(neighbors2) != 0:
+        return True
+    else:
+        return False
