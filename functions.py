@@ -75,7 +75,6 @@ def refine_for_superimpose(fixedchain,
     chains_pattern = (fixedchain_pattern, movingchain_pattern)
     return chains_pattern
 
-
 def get_chain_refined(chain_original,
                       chain_pattern):  # creates new chain objects filtering the residues of the original chain, to get their atoms later, with get_atoms_list() and superimpose
     new_chain = Bio.PDB.Chain.Chain('X')
@@ -85,19 +84,18 @@ def get_chain_refined(chain_original,
             new_chain.add(residue.copy())
     return new_chain
 
-def check_clashes(current_model):
+def check_clashes(current_model, newchain):
     neighbors2 = set()
     atom_list = Bio.PDB.Selection.unfold_entities(current_model, 'A')
     ns = Bio.PDB.NeighborSearch(atom_list)
-    chain_list = Bio.PDB.Selection.unfold_entities(current_model, 'C')
+    # chain_list = Bio.PDB.Selection.unfold_entities(current_model, 'C')
 
-    for chain in chain_list:
-        for at in chain.get_atoms():
-            center = at.get_coord()
-            neighbors = ns.search(center, 1.5, level='C')
-            for element in neighbors:
-                if element != chain:
-                    neighbors2.add(element)
+    for at in newchain.get_atoms():
+        center = at.get_coord()
+        neighbors = ns.search(center, 1.5, level='C')
+        for element in neighbors:
+            if element != newchain:
+                neighbors2.add(element)
 
     if len(neighbors2) != 0:
         return True

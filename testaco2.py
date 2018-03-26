@@ -8,7 +8,7 @@ from functions import *
 # from get_interactions_dict import dict_ids
 
 # Setting the directory where the input files are
-inputs_dir = os.getcwd() + '/inputs_profe_nr/'
+inputs_dir = os.getcwd() + '/output_reduce_inputs/'
 inputs_files = os.listdir(inputs_dir)
 
 PDBparser = Bio.PDB.PDBParser()
@@ -24,6 +24,7 @@ for pair in inputs_files:
     structure = PDBparser.get_structure(pdb_code, pdb_filename)
     for model in structure:
         for chain in model:
+
             c += 1
             original_id = copy.copy(chain.id)
             chain.id = c
@@ -84,8 +85,8 @@ print(number_to_letter)
 unique_chains_fasta(number_to_letter)
 
 # Get stoichiometry from the user -> interactive or dictionary
-# ref_counter_user = {'a':2, 'b':2, 'c':2, 'd':2} #'a','b','c','d' are UNIQUE chains from the values of number_to_letter dictionary (NUCLEOSOME)
-ref_counter_user = {'a': 24} #'a','b','c','d' are UNIQUE chains from the values of number_to_letter dictionary.
+ref_counter_user = {'a':2, 'b':2, 'c':2, 'd':2} #'a','b','c','d' are UNIQUE chains from the values of number_to_letter dictionary (NUCLEOSOME)
+# ref_counter_user = {'a': 24} #'a','b','c','d' are UNIQUE chains from the values of number_to_letter dictionary.
 
 
 list_of_dic = []
@@ -107,7 +108,7 @@ for d in list_of_dic:
 
 #######
 
-output_models = ("./output_profe_nr/")
+output_models = ("./output_reduced/")
 if not os.path.exists(output_models):
     os.makedirs(output_models)
 
@@ -272,7 +273,7 @@ for input in list_of_dic:
                                     # io.set_structure(current_model[0])
                                     # io.save(pdb_out_filename)
 
-                                    clash = check_clashes(current_model[0])
+                                    clash = check_clashes(current_model[0], new_chain)
                                     print("Clashes_boolean: %s" % clash)
                                     if clash == True:
                                         current_model[0].detach_child(new_chain.id)
