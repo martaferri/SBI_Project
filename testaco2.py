@@ -85,9 +85,10 @@ print(number_to_letter)
 unique_chains_fasta(number_to_letter)
 
 # Get stoichiometry from the user -> interactive or dictionary
-ref_counter_user = {'a':2, 'b':2, 'c':2, 'd':2} #'a','b','c','d' are UNIQUE chains from the values of number_to_letter dictionary (NUCLEOSOME)
+# ref_counter_user = {'a':2, 'b':2, 'c':2, 'd':2} #'a','b','c','d' are UNIQUE chains from the values of number_to_letter dictionary (NUCLEOSOME)
 # ref_counter_user = {'a': 24} #'a','b','c','d' are UNIQUE chains from the values of number_to_letter dictionary.
-
+ref_counter_user = {'a': 1, 'b': 1, 'c': 1, 'd': 1, 'e': 1, 'f': 1, 'g': 1, 'h': 1, 'i': 1, 'j': 1, 'k': 1, 'l': 1, 'm': 1, 'n': 1, 'o': 1, 'p': 1, 'q': 1, 'r': 1, 's': 1, 't': 1} #4v4a
+# ref_counter_user = {'a': 24} #2f1d
 
 list_of_dic = []
 for dic in list_of_dic_inputs:
@@ -108,7 +109,7 @@ for d in list_of_dic:
 
 #######
 
-output_models = ("./output_reduced/")
+output_models = ("./3kuy_outputs/")
 if not os.path.exists(output_models):
     os.makedirs(output_models)
 
@@ -120,12 +121,12 @@ for input in list_of_dic:
     if not os.path.exists(outputs):
         os.makedirs(outputs)
 
-    input_idx=list_of_dic.index(input)
+    input_idx = list_of_dic.index(input)
     ref_counter_chains = copy.copy(list_of_dic[input_idx])
 
     input_ids = ["a", "b"]
     i = 0
-    for k,v in copy.copy(list_of_dic[input_idx]).items():
+    for k, v in copy.copy(list_of_dic[input_idx]).items():
         k.id = input_ids[i]
         i += 1
 

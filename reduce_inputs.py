@@ -6,15 +6,21 @@ import utilities
 import copy
 from functions import *
 
-def get_distance(list1, list2):
-    """Given two lists of coordinates, it calculates the distance."""
-    import math
 
-    distance_result = (list1[0] - list2[0]) ** 2 + (list1[1] - list2[1]) ** 2 + (list1[2] - list2[2]) ** 2
-    return math.sqrt(distance_result)
+def save_new_pair(chain1, chain2):
+    output = ("./output_reduce_inputs/")
+    if not os.path.exists(output):
+        os.makedirs(output)
+    name = chain1.id + chain2.id
+    newmodel = Bio.PDB.Model.Model("new")
+    newmodel.add(chain1)
+    newmodel.add(chain2)
+    io = Bio.PDB.PDBIO()
+    io.set_structure(newmodel)
+    io.save(output + name + ".pdb")
 
 
-inputs_dir = os.getcwd() + "/interactions_results/"
+inputs_dir = os.getcwd() + "/get_interactions_results/"
 inputs_files = os.listdir(inputs_dir)
 
 PDBparser = Bio.PDB.PDBParser()
@@ -46,7 +52,9 @@ for pair0 in list_of_pairs:
                 score_chain = alignments[0][2]
                 len_max = max(len(pair00_seq), len(chain_seq))
                 cutoff_chain = score_chain / len_max
+                print("Testing if %s and %s will pass the cut-off (%.4f)" % (pair0[0], chain, cutoff_chain))
                 if cutoff_chain >= cutoff:
+                    print("%s and %s have passed the cut-off (%.4f)" % (pair0[0], chain, cutoff_chain))
                     fixedchain = pair0[0]
                     movingchain = chain
                     pair1_to_pop = copy.copy(pair1)
@@ -109,6 +117,7 @@ for pair0 in list_of_pairs:
 
 
                     max_distance = max(distances)
+                    print("\tMax distance: %d" % max_distance)
                     if max_distance < 9:
                         pairs = [pair0, pair1]
                         print("The pairs %s and %s are REDUNDANT")
@@ -141,8 +150,10 @@ for pair in to_delete_pair:
                 idx = final_inputs.index(pair)
                 del final_inputs[idx]
 
-
 print("\n\nFINAL LIST: %s" % final_inputs)
+
+for element in final_inputs:
+    save_new_pair(element[0], element[1])
 
 
 print("END")
