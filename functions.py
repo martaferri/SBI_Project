@@ -22,14 +22,14 @@ def check_type(chain):
     list_c = []
     for element in atoms:
         list_c.append(element.get_name())
-    if "CB" in list_c:
+    if "CA" in list_c:
         type_chain = "protein"
     else:
         type_chain = "nucleic_acid"
     return type_chain
 
 def adapt_chain(chain):
-    """Checks the type of the chain and changes the C1' to CB if it is nucleic acid"""
+    """Checks the type of the chain and changes the C1' to CA if it is nucleic acid"""
     type_chain = check_type(chain)
     name = chain.id
     if type_chain == "nucleic_acid":
@@ -41,7 +41,7 @@ def adapt_chain(chain):
         for residue in new_chain:
             for atom in residue:
                 if atom.id == "C1'":
-                    atom.id = "CB"
+                    atom.id = "CA"
                     residue.add(atom.copy())
         return new_chain
     else:
@@ -161,7 +161,31 @@ def check_clashes(current_model, newchain):
 
     for at in newchain.get_atoms():
         center = at.get_coord()
-        neighbors = ns.search(center, 1.5, level='C')
+        neighbors = ns.search(center, 0.5, level='C')
+        for element in neighbors:
+            if element != newchain:
+                neighbors2.add(element)
+
+    if len(neighbors2) != 0:
+        return True
+    else:
+        return False
+
+def check_clashes_multi(current_model, list_models, newchain):
+    neighbors2 = set()
+
+    atom_list = Bio.PDB.Selection.unfold_entities(current_model, 'A')
+
+    for model in list_models:
+            atom_list2 = Bio.PDB.Selection.unfold_entities(model, 'A')
+            for element in atom_list2:
+                atom_list.append(element)
+
+    ns = Bio.PDB.NeighborSearch(atom_list)
+
+    for at in newchain.get_atoms():
+        center = at.get_coord()
+        neighbors = ns.search(center, 0.5, level='C')
         for element in neighbors:
             if element != newchain:
                 neighbors2.add(element)

@@ -10,7 +10,7 @@ import ast
 # from get_interactions_dict import dict_ids
 
 # Setting the directory where the input files are
-inputs_dir = os.getcwd() + '/output_reduce_inputs_3kuy_dna/'
+inputs_dir = os.getcwd() + '/test_3j7l/'
 inputs_files = os.listdir(inputs_dir)
 
 PDBparser = Bio.PDB.PDBParser()
@@ -88,12 +88,12 @@ unique_chains_fasta(number_to_letter)
 
 # Get stoichiometry from the user -> interactive or dictionary
 # ref_counter_user = {'a':2, 'b':2, 'c':2, 'd':2} #'a','b','c','d' are UNIQUE chains from the values of number_to_letter dictionary (NUCLEOSOME)
-ref_counter_user = {'a': 2, 'b': 2, 'c': 2, 'd': 2, 'e': 2} # 3kuy dna
+# ref_counter_user = {'a': 2, 'b': 2, 'c': 2, 'd': 2, 'e': 2} # 3kuy dna
 # ref_counter_user = {'a': 24} #'a','b','c','d' are UNIQUE chains from the values of number_to_letter dictionary.
 # ref_counter_user = {'a': 1, 'b': 1, 'c': 1, 'd': 1, 'e': 1, 'f': 1, 'g': 1, 'h': 1, 'i': 1, 'j': 1, 'k': 1, 'l': 1, 'm': 1, 'n': 1, 'o': 1, 'p': 1, 'q': 1, 'r': 1, 's': 1, 't': 1} #4v4a
 # ref_counter_user = {'a': 1, 'b': 1, 'c': 8, 'd': 1, 'e': 3, 'f': 1, 'g': 3, 'h': 3, 'i': 1, 'j': 1, 'k': 1, 'l': 1, 'm': 3, 'n': 1, 'o': 3, 'p': 1} #5vox
 # ref_counter_user = {'a': 24} #2f1d
-# ref_counter_user = {'a': 180} # 3j7l
+ref_counter_user = {'a': 180}  # 3j7l
 
 
 
@@ -124,11 +124,14 @@ for d in list_of_dic:
 
 #######
 
-output_models = ("./outputs_test/")
+output_models = ("./outputs_3j7l_todo/")
 if not os.path.exists(output_models):
     os.makedirs(output_models)
 
 n_model = 0
+model_number = 0
+
+
 for input in list_of_dic:
     n_model += 1
 
@@ -145,9 +148,17 @@ for input in list_of_dic:
         k.id = input_ids[i]
         i += 1
 
-    current_model = [x.get_parent() for x in copy.copy(list_of_dic[input_idx]).keys()]
-    for i in current_model[0]:
-        print(i)
+
+    current_model = Bio.PDB.Model.Model(model_number)
+    for chain in copy.copy(list_of_dic[input_idx]).keys():
+        current_model.add(chain)
+
+    list_models = [current_model]
+
+
+    # current_model = [x.get_parent() for x in copy.copy(list_of_dic[input_idx]).keys()]
+    # for i in current_model[model_number]:
+    #     print(i)
 
     n_round = 0
 
@@ -241,8 +252,14 @@ for input in list_of_dic:
                                     print("\tSUPERIMPOSING WITH:\n\t Fixed: %s, Moving: %s, Alt: %s" % (fixedchain, movingchain, altchain))
 
                                     # creating a copy of the altchain to add it with a new id
-                                    used_letters_list = [x.id for x in current_model[0]]
+                                    used_letters_list = [x.id for x in current_model]
+                                    if len(used_letters_list) == 6:
+                                        list_models.append(current_model)
+                                        model_number += 1
+                                        current_model = Bio.PDB.Model.Model(model_number)
+                                        used_letters_list = []
 
+                                    
 
                                     for character in utilities.ascii_list:
                                         if character not in used_letters_list:
@@ -253,8 +270,8 @@ for input in list_of_dic:
                                     for residue in altchain.get_residues():
                                         new_chain.add(residue.copy())
 
-                                    current_model[0].add(new_chain)
-                                    for i in current_model[0]:
+                                    current_model.add(new_chain)
+                                    for i in current_model:
                                         print(i)
 
                                     if len(fixed_atoms_list) != len(moving_atoms_list):
@@ -283,17 +300,17 @@ for input in list_of_dic:
                                     super_imposer.apply(new_chain.get_atoms())
 
                                     #TEMPORARY!!! format to save model
-                                    ref_chains_id = [str(x.id) for x in current_model[0]]
+                                    ref_chains_id = [str(x.id) for x in current_model]
                                     # model_name = "_".join(ref_chains_id)
                                     # pdb_out_filename = outputs + model_name + ".aligned.pdb"
                                     # io = Bio.PDB.PDBIO()
                                     # io.set_structure(current_model[0])
                                     # io.save(pdb_out_filename)
 
-                                    clash = check_clashes(current_model[0], new_chain)
+                                    clash = check_clashes_multi(current_model, list_models, new_chain)
                                     print("Clashes_boolean: %s" % clash)
                                     if clash == True:
-                                        current_model[0].detach_child(new_chain.id)
+                                        current_model.detach_child(new_chain.id)
                                         break
                                     #
                                     # #format to save model
@@ -331,19 +348,23 @@ for input in list_of_dic:
                     run = True
                     break
 
-        print("Saving %d model" % n_model)
-        model_filename = n_model
-        pdb_model_filename = outputs + str(model_filename) + ".aligned.pdb"
-        io = Bio.PDB.PDBIO()
-        io.set_structure(current_model[0])
-        io.save(pdb_model_filename)
+        print("\nSAVING MODEL %d...\n\n" % n_model)
+
+        i = 0
+        for model in list_models:
+            model_filename = n_model
+            pdb_model_filename = outputs + str(model_filename) + "_" + str(i) + ".aligned.pdb"
+            io = Bio.PDB.PDBIO()
+            io.set_structure(model)
+            io.save(pdb_model_filename)
+            i += 1
 
         print("ref_counter_chains %s, ref_counter %s" % (ref_counter_chains, ref_counter))
-        #        ref_chains = alt_chains
-        #
-        #
-        print("SUMMARY\nfinal altchain: %s" % altchain)
+
+
+        print("\nSUMMARY\nfinal altchain: %s" % altchain)
         print("final ref_counter_chains: %s" % ref_counter_chains)
         print("final ref_counter: %s\n" % ref_counter)
+        break
 
 print("\nEND\n")

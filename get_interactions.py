@@ -31,10 +31,10 @@ def calc_distances_residues(chain1, chain2):
     arr = []
 
     for atom1 in at1:
-        if atom1.id == 'CB':
+        if atom1.id == 'CA':
             list1.append(atom1)
     for atom2 in at2:
-        if atom2.id == 'CB':
+        if atom2.id == 'CA':
             list2.append(atom2)
 
     for combination in itertools.product(list1, list2):
@@ -43,16 +43,21 @@ def calc_distances_residues(chain1, chain2):
         dist = get_distance(list(coords1.tolist()), list(coords2.tolist()))
         arr.append(dist)
 
+    num_min = 0
     if len(arr) != 0:
         nparr = numpy.array(arr)
-        dist_tuple = (min(abs(nparr)), max(abs(nparr)), len(nparr))
+        for dist in nparr:
+            if dist < 8:
+                num_min += 1
+
+        dist_tuple = (min(abs(nparr)), max(abs(nparr)), len(nparr), num_min)
         return dist_tuple
 
 
 # Loop that compares all the chains and stores in a dict of dicts each computation of the distances between them
 main_dict = {}
 aa_list = ["ALA", "CYS", "ASP", "GLU", "PHE", "GLY", "HIS", "ILE", "LYS", "LEU", "MET", "ASN", "PRO", "GLN", "ARG",
-           "SER", "THR", "VAL", "TRP", "TYR", "  A", "  G", "  T", "  U", "  C", " DA", " DG", " DT", " DC"]
+           "SER", "THR", "VAL", "TRP", "TYR", "UNK", "  A", "  G", "  T", "  U", "  C", " DA", " DG", " DT", " DC"]
 
 set_aachains = set()
 
@@ -74,7 +79,7 @@ for chain1 in set_aachains:
 interactions_list = []
 for element in main_dict:
     for key, value in main_dict[element].items():
-        if value[0] <= 8:
+        if value[0] <= 8 and value[3] >= 8:
             interactions_list.append(element + key)
 
 # print(interactions_list)
@@ -93,7 +98,7 @@ for element in interactions_list:
     for line in pdb:
         if line.startswith('ATOM'):
             line = line.strip()
-            search = re.search(r'[A-Z]*\s*\d{1,5}\s*[A-Z]{1,3}[0-9]?\'?\s*[A-Z]{1,3}\s([a-zA-Z]).*', line)
+            search = re.search(r'[A-Z]*\s*\d{1,5}\s*[A-Z]{1,3}[0-9]?\'?\s*[A-Z]{1,3}\s([a-zA-Z1-9]).*', line)
             if search:
                 chain = search.group(1)
                 if chain == element[0]:

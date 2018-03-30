@@ -94,12 +94,14 @@ for pair0 in list_of_pairs:
                         chains_pattern = refine_for_superimpose(new_chain, comparingchain)
                         new_pattern = chains_pattern[0]
                         comparing_pattern = chains_pattern[1]
-
                         new_chain = get_chain_refined(new_chain, new_pattern)
                         comparingchain = get_chain_refined(comparingchain, comparing_pattern)
 
-                        new_chain_atoms_list = new_chain.get_atoms()
-                        comparing_chain_atoms_list = comparingchain.get_atoms()
+                        new_chain_atoms_list = get_atoms_list(new_chain)
+                        comparing_chain_atoms_list = get_atoms_list(comparingchain)
+
+                    if len(new_chain_atoms_list) == 0 or len(comparing_chain_atoms_list) == 0:
+                        break
 
                     distances = []
                     info = []
