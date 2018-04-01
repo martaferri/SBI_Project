@@ -37,8 +37,7 @@ if not os.path.exists("./models/optimization_results/dope_profile/"):
     os.makedirs("./models/optimization_results/dope_profile/")
 if not os.path.exists("./models/optimization_results/log_files/"):
     os.makedirs("./models/optimization_results/log_files/")  
-if not os.path.exists("./models/optimization_results/restraints/"):
-    os.makedirs("./models/optimization_results/restraints/")
+
 
 env = environ()
 env.io.atom_files_directory = ['../atom_files']
@@ -53,8 +52,6 @@ for file in files_list:
     code = "./models/" + str(file)
     mdl = complete_pdb(env, code)
     atmsel = selection(mdl)
-    mdl.restraints.make(atmsel, restraint_type='improper', spline_on_site=False)
-    mdl.restraints.write(file= "./models/optimization_results/restraints/" + str(file)+'.rsr')
     cg = conjugate_gradients(output='REPORT')
     
     trcfil = open("./models/optimization_results/stats/" + str(file) +'.stats', 'w')
