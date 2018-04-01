@@ -94,7 +94,7 @@ for file in flist:
 	pylab.ylabel('DOPE per-residue score', fontsize = 20)
 	pylab.plot(model, color='green', linewidth=3, label= file[3:-4])
 	pylab.legend(fontsize = 15)
-	pylab.savefig("./models/dope_profiles/" + file + 'dope_profile.jpg', dpi=100)
+	pylab.savefig("./models/dope_profiles/" + file[3:-4] + 'dope_profile.jpg', dpi=100)
 	pylab.close()
 
 
