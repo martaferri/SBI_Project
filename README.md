@@ -237,6 +237,10 @@ Trough our <b>sequence similarity analysis</b> based on a pairwise alignment we 
 
 An important trait of this structure is that all the protein chains were closely positioned, so, to reconstruct the model we had to reduce the clash cut-off distance to 0.5A. (argument need to be set to -cc 0.5). 
 
+<p align="center">
+  <img src="/1g65.png" width="450"/>
+</p>
+
 
 # Energy analysis comparision (Modeller): Comparision between the model and the refined model 
 
