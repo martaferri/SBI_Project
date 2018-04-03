@@ -197,7 +197,7 @@ Trough our <b>sequence similarity analysis</b> based on a pairwise alignment we 
 ## Nucleosome (3kuy)
 Nucleosome is a basic unit of DNA packaging in eukaryotes, which consists in a segment of DNA wound around a histone hetero octamer. The structure is formed by two copies of  core histones H2A (C, G), H2B (D, H), H3 (A, E) and H4 (B, F) and two DNA chains (I, J). We analyzed this structure in two ways: one using the histone octamer and another one using the whole complex.
 
-Trough our <b>sequence similarity analysis</b> based on a pairwise alignment we confirmed its stoichiometry and 6 unique chains were determined, two of them are protein sequences and the other two are DNA sequences. Additionally, by the <b>structural similarity analysis</b> we achieve a non-redundant interaction set of 16 pairs out of an initial set of 24 pairs (from getting all the possible interactions by distance restrictions).
+Trough our <b>sequence similarity analysis</b> based on a pairwise alignment we confirmed its stoichiometry and 5 unique chains were determined, one of them are protein sequences and the other two are DNA sequences. Additionally, by the <b>structural similarity analysis</b> we achieve a non-redundant interaction set of 16 pairs out of an initial set of 24 pairs (from getting all the possible interactions by distance restrictions).
 
 <p align="center">
   <img src="/3kuy.png" width="450"/>
