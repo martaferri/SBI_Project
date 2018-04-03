@@ -1,52 +1,48 @@
-# WebApp: Gene to Literature Integrative Database (GLID)
+# Tutorial
 
-This Web Application (WebApp) aims to to generate and organize data and knowledge bases relating gene nomenclature issues, both at inter and intra-species level. 
+## Prerequisites
 
-## Getting Started
+* <b>Python</b> 3.0 Release
 
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
+https://www.python.org/download/releases/3.0/
 
-### Prerequisites
+* <b>Modeller</b> 9.19 Release
 
-What things you need to install the software and how to install them.
+https://anaconda.org/salilab/modeller
 
-* MySQL
+It is also recommended to have a program for interactive visualization and analysis of molecular structures and related data, such as <b>Chimera</b> or <b>VMD</b>.
 
-```
-create database glid;
-use glid;
-source glid.dump.sql;
-```
+https://www.cgl.ucsf.edu/chimera/
 
-### Installing
+http://www.ks.uiuc.edu/Research/vmd/
 
-A step by step series of examples that tell you have to get a development env running
+## Input files
 
-Say what the step will be
+The input files must be <b>pairs of interacting chains</b> (.pdb), which has to be located into a directory decided by the user. This directory can also be in <i>tar.gz</i> format. 
 
-```
-Give the example
-```
+In case you are interested in <b>rebuilding a macrocomplex</b>, you can introduce its <b>pdb file</b> (.pdb) from PDB."
 
-And repeat
+## Python modules
 
-```
-until finished
-```
+A module is a file containing Python definitions and statements. It is important to consider that definitions from a module can be imported into other modules or into the <i>main</i> module.
 
-End with an example of getting some data out of the system or using it for a little demo
+* <b>sbi_project.py</b>: <i>main</i> module or program created to reconstruct a macrocomplex given a set of interacting pairs (prot-prot, prot-RNA). It also considers the possibility to rebuild a macrocomplex if the input is a macrocomplex (.pdb). 
 
-## Running the tests
+Aditionally, this module contains the ArgumentParser object, created using argparse module, which is used for command-line options, arguments and sub-commands. The ArgumentParser object will hold all the information necessary to parse the command line into Python data types.
 
-Explain how to run the automated tests for this system
+* <b>get_interactions.py</b>: this module is <b>only</b> used by the <i>main</i> module if the given input is a macrocomplex (.pdb). It gets all possible interactions given a this structure and computes the distance between chains parining that ones which accomplish the following conditions: less than 8A between their carbons alpha (CA) and implication of at least 8 CA in this interaction. It creates the pair files (.pdb) which later, in the <i>main</i> program will be filtered by the imported module named <b>reduce_inputs_func.py</b> to get only the non-redundant interactions to build the model.
 
-### Break down into end to end tests
+* <b>reduce_inputs_func.py</b>: this module is imported into the <i>main</i> module to speeds up the further process to create the model, as it is getting only the non-redundant interactions from the whole set of input pairs. From a set of input pairs (.pdb) compares each chain pair with the rest. This comparision has two steps: sequence and structural. First of all, a pairwise alignment is performed to determine similar sequences (cut-off = 0.9). The score of the alignment is normalized by the length of the longest sequence. If the normalized score is higher than the stablished cut-off, the analysis proceeds to the second step. In this step, a superimposition is performed between the similar chains. These similar chains are part of two different interaction pairs, which will be refered as fixed and moving chains. We apply the rotran matrix to the couple of the moving chain, which will be refered as alternative/new chain. Finally, the distances between the CA of the comparing chain (couple of the fixed chain) and the new chain are computed. If the distance is lower than 9A, the interactions will be considered the same (redundant). It saves the non-redundant chain pairs (.pdb) obtained from the reducing inputs process, which will be considered as the required input pairs to build the model.
 
-Explain what these tests test and why
+* <b>functions.py</b>: this module is composed by a set of different <b>functions</b> to solve biological and technical problems during the analysis. Thus, it is imported into the other modules in order to use the defined functions.
 
-```
-Give an example
-```
+* <b>utilities.py</b>: this module is composed by a set of different <b>variables</b> to solve biological and technical problems during the analysis. Thus, it is imported into the other modules in order to use the defined functions.
+
+* <b>classes.py</b>: this module is composed by the definition of a <b>class</b> to check if the input variable is a directory or a compressed directory (.tar.gz).
+
+* <b>DOPE_profile.py</b>: this module is <b>only</b> used if the argument '-e', '--energy_plot' is set. It creates a DOPE profile plot (.jpg) from a macrocomplex (.pdb), which has no acid nucleic chains using Modeller.
+
+* <b>DOPE_comparison.py</b>: this module is <b>only</b> used if the argument '-ref', '--refine' is set. It refines a model previously generated with the <i>main</i> program according to the optimization parameters defined by Modeller. It also generates a comparison energy plot between the model generated by the program and the refined one.
 
 ### And coding style tests
 
@@ -55,25 +51,7 @@ Explain what these tests test and why
 ```
 Give an example
 ```
-
-## Deployment
-
-Add additional notes about how to deploy this on a live system
-
-## Built With
-
-* [Dropwizard](http://www.dropwizard.io/1.0.2/docs/) - The web framework used
-* [Maven](https://maven.apache.org/) - Dependency Management
-* [ROME](https://rometools.github.io/rome/) - Used to generate RSS Feeds
-
-## Contributing
-
-Please read [CONTRIBUTING.md](https://gist.github.com/PurpleBooth/b24679402957c63ec426) for details on our code of conduct, and the process for submitting pull requests to us.
-
-## Versioning
-
-We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/your/project/tags). 
-
+ 
 ## Authors
 
 * **MiquelÀngel Schikora** - [Github](https://github.com/MikiSchikora)
@@ -81,12 +59,7 @@ We use [SemVer](http://semver.org/) for versioning. For the versions available, 
 * **Aida Ripoll** - [Github](https://github.com/aidarripoll)
 
 
-
 See also the list of [contributors](https://github.com/your/project/contributors) who participated in this project.
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
 
 ## Acknowledgments
 
