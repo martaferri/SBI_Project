@@ -177,8 +177,7 @@ To avoid this we decided to give new ids to the chains from the input to handle 
 When a chain is added to the current model, its id is changed again. At this point, the new id is obtained from a list of ASCII characters (*ascii_list*) located in the **utilities.py** script. This last change of id allowed us to handle the saving of the created model in PDB format, but the ASCII characters list is limited, therefore if a macrocomplex is formed by more than 83 chains, we have to create a new model to continue adding chains without trouble.
 To sum up, if the macrocomplex has less than 83 chains, it will be created as one model and saved in one single file, but if it doesn't, the protein will be created in more than one model and saved splitted in different files. Besides avoiding biopython errors during the program, having two or more files for one big structure avoids issues in Chimera when labeling chains.
 
-##############################################################################################################################
-##############################################################################################################################
+#######################################################################################
  
  # Analysis of some of the reconstructed macrocomplexes
  
@@ -188,8 +187,7 @@ To sum up, if the macrocomplex has less than 83 chains, it will be created as on
 
 
  
-##############################################################################################################################
-##############################################################################################################################
+#######################################################################################
 
 ## Authors
 
