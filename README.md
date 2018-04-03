@@ -138,7 +138,7 @@ Additionally to these previously mentioned outputs, if <b>-e, --energy_plot </b>
  - <i>optimization_results (directory) </i> -> dope_profile, refined_models, stats and log_files (subdirectories). Inside dope_profiles, an image named '.pdb.dope_profile.jpg' comparing both models is created.
  - <i>temp (directory)</i>: temporary directory containing the pdb files (.pdb = generated model, .pdb.B = refined) without the acid nucleic chains, in order to that use them in the refining process, once the model has been built (to avoid Modeller errors).
  
-######################################################################################
+---
  
 # Biological considerations
 
@@ -176,8 +176,8 @@ To avoid this we decided to give new ids to the chains from the input to handle 
 When a chain is added to the current model, its id is changed again. At this point, the new id is obtained from a list of ASCII characters (*ascii_list*) located in the **utilities.py** script. This last change of id allowed us to handle the saving of the created model in PDB format, but the ASCII characters list is limited, therefore if a macrocomplex is formed by more than 83 chains, we have to create a new model to continue adding chains without trouble.
 To sum up, if the macrocomplex has less than 83 chains, it will be created as one model and saved in one single file, but if it doesn't, the protein will be created in more than one model and saved splitted in different files. Besides avoiding biopython errors during the program, having two or more files for one big structure avoids issues in Chimera when labeling chains.
 
-######################################################################################
- 
+---
+
  # Analysis of some of the reconstructed macrocomplexes
  
  ## Hemoglobin (1gzx)
@@ -263,7 +263,7 @@ Brome mosaic virus is a small positive-stranded, icosahedral RNA plant virus, wh
 
 
  
-#######################################################################################
+---
 
 ## Authors
 
