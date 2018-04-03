@@ -138,8 +138,7 @@ Additionally to these previously mentioned outputs, if <b>-e, --energy_plot </b>
  - <i>optimization_results (directory) </i> -> dope_profile, refined_models, stats and log_files (subdirectories). Inside dope_profiles, an image named '.pdb.dope_profile.jpg' comparing both models is created.
  - <i>temp (directory)</i>: temporary directory containing the pdb files (.pdb = generated model, .pdb.B = refined) without the acid nucleic chains, in order to that use them in the refining process, once the model has been built (to avoid Modeller errors).
  
-##############################################################################################################################
-##############################################################################################################################
+#######################################################################################
  
 # Biological considerations
 
@@ -193,14 +192,23 @@ Trough our <b>sequence similarity analysis</b> based on a pairwise alignment we 
   <img src="/1gzx.png" width="450"/>
 </p>
 
+We also performed
+
+<p align="center">
+  <img src="/1gzx.png" width="450"/>
+</p>
+
+
+
 ## Nucleosome (3kuy)
 Nucleosome is a basic unit of DNA packaging in eukaryotes, which consists in a segment of DNA wound around a histone hetero octamer. The structure is formed by two copies of  core histones H2A (C, G), H2B (D, H), H3 (A, E) and H4 (B, F) and two DNA chains (I, J). We analyzed this structure in two ways: one using the histone octamer and another one using the whole complex.
 
-Trough our <b>sequence similarity analysis</b> based on a pairwise alignment we confirmed its stoichiometry and 6 unique chains were determined, two of them are protein sequences and the other two are DNA sequences. Additionally, by the <b>structural similarity analysis</b> we achieve a non-redundant interaction set of 17 pairs out of an initial set of 24 pairs (from getting all the possible interactions by distance restrictions).
+Trough our <b>sequence similarity analysis</b> based on a pairwise alignment we confirmed its stoichiometry and 6 unique chains were determined, two of them are protein sequences and the other two are DNA sequences. Additionally, by the <b>structural similarity analysis</b> we achieve a non-redundant interaction set of 16 pairs out of an initial set of 24 pairs (from getting all the possible interactions by distance restrictions).
 
 <p align="center">
   <img src="/3kuy.png" width="450"/>
 </p>
+
 
 ## Ribosome (4v4a)
 <b>4v4a</b> entry corresponds to an Escherichia coli 70S ribosome. It consists on an hetero 49-mer formed by two subunits: 50S (large) and 30S (small). 50S is composed of 30 protein chains and a two rRNAs (5S and 23S), while 30S is formed by 19 protein chains and an rRNA (16S). 
