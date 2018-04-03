@@ -187,26 +187,59 @@ Oxy T state haemoglobin: oxygen bound at all four haems (https://www.rcsb.org/st
 
 Hemoglobin is an iron-containing oxygen-transporter metalloprotein. Forms an hetero tetramer composed by 2α (A, C) and 2β (B, D) chains. This entry corresponds to an Homo sapiens oxy T state hemoglobin, so we will find four oxygens bound to the hemo groups. 
 
-Trough our <b>sequence similarity analysis</b> based on a pairwise alignment we confirmed its stoichiometry and two unique chains were determined. Additionally, by the <b>structural similarity analysis</b> we achieve a non-redundant interaction set of two pairs out of an initial set of four pairs (from getting all the possible interactions by distance restrictions).
+Trough our <b>sequence similarity analysis</b> based on a pairwise alignment we confirmed its stoichiometry and 2 unique chains were determined. Additionally, by the <b>structural similarity analysis</b> we achieve a non-redundant interaction set of two pairs out of an initial set of four pairs (from getting all the possible interactions by distance restrictions).
 
- 
 <p align="center">
-  <img src="/hemo.dope_profile.jpg" width="350"/>
+  <img src="/1gzx.png" width="450"/>
 </p>
 
 ## Nucleosome (3kuy)
 Nucleosome is a basic unit of DNA packaging in eukaryotes, which consists in a segment of DNA wound around a histone hetero octamer. The structure is formed by two copies of  core histones H2A (C, G), H2B (D, H), H3 (A, E) and H4 (B, F) and two DNA chains (I, J). We analyzed this structure in two ways: one using the histone octamer and another one using the whole complex.
 
-Trough our <b>sequence similarity analysis</b> based on a pairwise alignment we confirmed its stoichiometry and six unique chains were determined, two of them are protein sequences and the other two are DNA sequences. Additionally, by the <b>structural similarity analysis</b> we achieve a non-redundant interaction set of two pairs out of an initial set of four pairs (from getting all the possible interactions by distance restrictions).
+Trough our <b>sequence similarity analysis</b> based on a pairwise alignment we confirmed its stoichiometry and 6 unique chains were determined, two of them are protein sequences and the other two are DNA sequences. Additionally, by the <b>structural similarity analysis</b> we achieve a non-redundant interaction set of 17 pairs out of an initial set of 24 pairs (from getting all the possible interactions by distance restrictions).
+
+<p align="center">
+  <img src="/3kuy.png" width="450"/>
+</p>
 
 ## Ribosome (4v4a)
 <b>4v4a</b> entry corresponds to an Escherichia coli 70S ribosome. It consists on an hetero 49-mer formed by two subunits: 50S (large) and 30S (small). 50S is composed of 30 protein chains and a two rRNAs (5S and 23S), while 30S is formed by 19 protein chains and an rRNA (16S). 
 
+Trough our <b>sequence similarity analysis</b> based on a pairwise alignment we confirmed its stoichiometry and 20 unique chains were determined, all of them are protein sequences and the other is RNA. Additionally, by the <b>structural similarity analysis</b> we achieve a non-redundant interaction set of 27 pairs out of an initial set of 27 pairs (from getting all the possible interactions by distance restrictions). 
+
+An important trait of this structure is that the RNA molecule is interacting with almost all the protein chains, so, to reconstruct the model we had to reduce the clash cut-off distance to 0.5A. (argument need to be set to -cc 0.5).
+
+<p align="center">
+  <img src="/4v4a.png" width="450"/>
+</p>
+
 ## Phosphatase (2f1d)
 <b>2f1d</b> entry corresponds to an Arabidopsis thaliana imidazoleglycerol-phosphate dehydratase, an enzyme of histidine biosynthesis. The structure is composed of 24 identical subunits and which form a dimanganese cluster crucial for its activation. 
 
+Trough our <b>sequence similarity analysis</b> based on a pairwise alignment we confirmed its stoichiometry and one unique chains were determined. Additionally, by the <b>structural similarity analysis</b> we achieve a non-redundant interaction set of 3 pairs out of an initial set of 26 pairs (from getting all the possible interactions by distance restrictions). 
+
+An important trait of this structure is that all the protein chains were closely positioned, so, to reconstruct the model we had to reduce the clash cut-off distance to 0.5A. (argument need to be set to -cc 0.5). 
+
+At this image, we can see that the pdb structure from the PDB file (2f1d) is divided into two structures, while in our model it its completely reconstructed.
+
+<p align="center">
+  <img src="/2f1d.png" width="450"/>
+</p>
+
 ## Proteasome (1g65)
 <b>1g65</b> PDB entry corresponds to an Saccharomyces cerevisiae 20S core particle from proteasome interacting with epoxomicin, an inhibitor. Its function is to degrade unneed or damaged proteins by proteolysis. Its structure is an hetero 28-mer, formed by 14 pairs of components (Y7, Y13, PRE2, PRE3, PRE4, PRE5, PRE6, PUP1, PUP2, PUP3, C1, C5, C7α, C11) and two chains of the epoxomicin.
+
+
+# Limitations
+
+After our analysis with some examples, we realized that our program has some limitations dealing with macrocomplex composed by more subunits such as ATPasa (5vox) or Full virus map of brome mosaic virus (3j7l). 
+
+## ATPase (5vox)
+V-ATPase are found in the eukaryotic endomembrane system and hydrolase the ATP to drive a proton pump. V-ATPase is an hetero 33-mer composed by two domains, V0 and V1, each one composed respectively by 5 and 8 subunits. When trying to reconstuct this macrocomplex, some of the chains which only interact with one of a set of equal chains were wrongly placed. It was depending on the input it takes as a reference to start building the model. Moreover, the clush distance cut-off has to be also lower to 0.5.
+
+## Brome mosaic virus (3j7l)
+Brome mosaic virus is a small positive-stranded, icosahedral RNA plant virus, which is formed by 3 quasi-equivalent subunits: A, which form a pentameric structures, B and C, which compose  hexameric capsomeres. In this case, as it has a total of 180 subunits, and the number of strings to assign to each chain was limited to 83, we had to build different models and checking the clashes of each new added chain to the previously created models. Finally, we were almost able to reconstruct it but it takes a long time.
+
 
  
 #######################################################################################
