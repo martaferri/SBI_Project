@@ -138,7 +138,7 @@ Additionally to these previously mentioned outputs, if <b>-e, --energy_plot </b>
  - <i>optimization_results (directory) </i> -> dope_profile, refined_models, stats and log_files (subdirectories). Inside dope_profiles, an image named '.pdb.dope_profile.jpg' comparing both models is created.
  - <i>temp (directory)</i>: temporary directory containing the pdb files (.pdb = generated model, .pdb.B = refined) without the acid nucleic chains, in order to that use them in the refining process, once the model has been built (to avoid Modeller errors).
  
-#######################################################################################
+######################################################################################
  
 # Biological considerations
 
@@ -176,7 +176,7 @@ To avoid this we decided to give new ids to the chains from the input to handle 
 When a chain is added to the current model, its id is changed again. At this point, the new id is obtained from a list of ASCII characters (*ascii_list*) located in the **utilities.py** script. This last change of id allowed us to handle the saving of the created model in PDB format, but the ASCII characters list is limited, therefore if a macrocomplex is formed by more than 83 chains, we have to create a new model to continue adding chains without trouble.
 To sum up, if the macrocomplex has less than 83 chains, it will be created as one model and saved in one single file, but if it doesn't, the protein will be created in more than one model and saved splitted in different files. Besides avoiding biopython errors during the program, having two or more files for one big structure avoids issues in Chimera when labeling chains.
 
-#######################################################################################
+######################################################################################
  
  # Analysis of some of the reconstructed macrocomplexes
  
@@ -187,12 +187,6 @@ Oxy T state haemoglobin: oxygen bound at all four haems (https://www.rcsb.org/st
 Hemoglobin is an iron-containing oxygen-transporter metalloprotein. Forms an hetero tetramer composed by 2α (A, C) and 2β (B, D) chains. This entry corresponds to an Homo sapiens oxy T state hemoglobin, so we will find four oxygens bound to the hemo groups. 
 
 Trough our <b>sequence similarity analysis</b> based on a pairwise alignment we confirmed its stoichiometry and 2 unique chains were determined. Additionally, by the <b>structural similarity analysis</b> we achieve a non-redundant interaction set of two pairs out of an initial set of four pairs (from getting all the possible interactions by distance restrictions).
-
-<p align="center">
-  <img src="/1gzx.png" width="450"/>
-</p>
-
-We also performed
 
 <p align="center">
   <img src="/1gzx.png" width="450"/>
@@ -221,6 +215,7 @@ An important trait of this structure is that the RNA molecule is interacting wit
   <img src="/4v4a.png" width="450"/>
 </p>
 
+
 ## Phosphatase (2f1d)
 <b>2f1d</b> entry corresponds to an Arabidopsis thaliana imidazoleglycerol-phosphate dehydratase, an enzyme of histidine biosynthesis. The structure is composed of 24 identical subunits and which form a dimanganese cluster crucial for its activation. 
 
@@ -234,8 +229,26 @@ At this image, we can see that the pdb structure from the PDB file (2f1d) is div
   <img src="/2f1d.png" width="450"/>
 </p>
 
+
 ## Proteasome (1g65)
 <b>1g65</b> PDB entry corresponds to an Saccharomyces cerevisiae 20S core particle from proteasome interacting with epoxomicin, an inhibitor. Its function is to degrade unneed or damaged proteins by proteolysis. Its structure is an hetero 28-mer, formed by 14 pairs of components (Y7, Y13, PRE2, PRE3, PRE4, PRE5, PRE6, PUP1, PUP2, PUP3, C1, C5, C7α, C11) and two chains of the epoxomicin.
+
+Trough our <b>sequence similarity analysis</b> based on a pairwise alignment we confirmed its stoichiometry and 15 unique chains were determined. Additionally, by the <b>structural similarity analysis</b> we achieve a non-redundant interaction set of 36 pairs out of an initial set of 70 pairs (from getting all the possible interactions by distance restrictions). 
+
+An important trait of this structure is that all the protein chains were closely positioned, so, to reconstruct the model we had to reduce the clash cut-off distance to 0.5A. (argument need to be set to -cc 0.5). 
+
+
+# Energy analysis comparision (Modeller): Comparision between the model and the refined model 
+
+After the optimization and the DOPE assessment performed by the MODELLER functions, we can obtain this DOPE score plot, where we can compare the energy profile of the model before and after the optimization. In this plot, we don’t see big changes between both models, but the slight changes made in the optimized model have lower DOPE scores values. Changes in the optimized model are slight because restrictions applied are subtle, and this is reflected into the DOPE profile plot. 
+
+The quality of the DOPE plots varies depending on the structures optimized and analyzed. In models that include peptide chains and nucleic acids we observe profiles with plateaus of value 0 in the positions corresponding to the nucleic acid. To overcome this error, our program removes the nucleic acid atoms from the optimized and the non-optimized models files. However, the DOPE profile of both models seems to be shifted, so at the moment we can’t rely on it. One of the further intentions of the project is to improve the overall optimization process, combining MODELLER with other available softwares.
+
+An example of this analysis is shown here with the hemoglobin reconstruction from 1gzx pdb file:
+
+<p align="center">
+  <img src="/mod_1_0.aligned.pdb.dope_profile.jpg" width="450"/>
+</p>
 
 
 # Limitations
@@ -258,11 +271,3 @@ Brome mosaic virus is a small positive-stranded, icosahedral RNA plant virus, wh
 * **Marta Ferri** - [Github](https://github.com/martaferri)
 * **Aida Ripoll** - [Github](https://github.com/aidarripoll)
 
-
-See also the list of [contributors](https://github.com/your/project/contributors) who participated in this project.
-
-## Acknowledgments
-
-* Hat tip to anyone who's code was used
-* Inspiration
-* etc
