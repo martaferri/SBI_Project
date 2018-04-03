@@ -182,9 +182,7 @@ To sum up, if the macrocomplex has less than 83 chains, it will be created as on
  
  # Analysis of some of the reconstructed macrocomplexes
  
- ![Optional Text](image.png)
- 
- <p align="center">
+<p align="center">
   <img src="/hemo.dope_profile.jpg" width="350"/>
 </p>
 
